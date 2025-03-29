@@ -7,22 +7,25 @@ const images = [
 ];
 
 let selectedImages = [];
-let duplicateIndex = Math.floor(Math.random() * images.length);
-
-// Add duplicate image
-const shuffledImages = [...images, images[duplicateIndex]].sort(() => Math.random() - 0.5);
-
 const container = document.getElementById('image-container');
 const resetButton = document.getElementById('reset');
 const verifyButton = document.getElementById('verify');
 const message = document.getElementById('para');
 
+// ✅ Select a random image to duplicate
+const duplicateIndex = Math.floor(Math.random() * images.length);
+const duplicateImage = images[duplicateIndex];
+
+// ✅ Create shuffled image array with a duplicate
+let shuffledImages = [...images, duplicateImage].sort(() => Math.random() - 0.5);
+
+// ✅ Display images
 function displayImages() {
+    container.innerHTML = ""; // Clear previous images
     shuffledImages.forEach((src, index) => {
         const img = document.createElement('img');
         img.src = src;
-        img.className = img${(index % 5) + 1}; // Assign class names .img1 to .img5
-        img.dataset.index = index;
+        img.dataset.imageId = src; // Store ID for comparison
         img.addEventListener('click', () => selectImage(img));
         container.appendChild(img);
     });
@@ -51,7 +54,7 @@ function resetSelection() {
 function verifySelection() {
     if (selectedImages.length === 2) {
         const [img1, img2] = selectedImages;
-        if (img1.src === img2.src) {
+        if (img1.dataset.imageId === img2.dataset.imageId) {
             message.textContent = "You are a human. Congratulations!";
             message.style.color = "green";
         } else {
@@ -62,9 +65,9 @@ function verifySelection() {
     }
 }
 
-
+// ✅ Event Listeners
 resetButton.addEventListener('click', resetSelection);
 verifyButton.addEventListener('click', verifySelection);
 
-
+// ✅ Initialize
 displayImages();
